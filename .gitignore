@@ -1,0 +1,4 @@
+*__pycache__
+correios/webpages/*
+zip_codes.json
+geckodriver.log
