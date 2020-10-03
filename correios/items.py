@@ -7,5 +7,5 @@ import scrapy
 
 
 class CorreiosItem(scrapy.Item):
-    city = scrapy.Field()
-    zip_code = scrapy.Field()
+    localidade = scrapy.Field()
+    faixa_de_cep = scrapy.Field()
