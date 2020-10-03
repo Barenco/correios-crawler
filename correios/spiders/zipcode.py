@@ -28,7 +28,7 @@ class ZipCodeSpider(scrapy.Spider):
         driver.find_element_by_xpath('//*[@id="Geral"]/div/div/span[3]/label/a').click()
         driver.switch_to.window(driver.window_handles[1])
         time.sleep(1)
-        driver.find_element_by_xpath(f'//*[@id="Geral"]/div/div/span/a[1]').click()
+        driver.find_element_by_xpath(f'//*[@id="Geral"]/div/div/span/a[2]').click()
 
         with open('./correios/webpages/page.html', 'w') as page_html:
             page_html.write(driver.page_source)
@@ -44,14 +44,14 @@ class ZipCodeSpider(scrapy.Spider):
 
         for tr in response.css('tbody tr')[1:].getall():
             tr = ''.join(tr.split('\t'))
+            try:
+                tr = tr.encode(response.encoding).decode()
+            except:
+                tr = tr.encode('utf-8').decode()
 
             city = re.findall('value="(.*?)"', tr)
             zip_code = re.findall('[0-9][0-9][0-9][0-9][0-9]-[0-9][0-9][0-9]', tr)
-            
+
             item['city'] = city
-            if zip_code:
-                item['zip_code'] = zip_code
-            else:
-                item['zip_code'] = '-'
-            
+            item['zip_code'] = zip_code if zip_code else '-'
             yield item
