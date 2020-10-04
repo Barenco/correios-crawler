@@ -1,13 +1,9 @@
-import scrapy
-import time
-import os
-import re
+import scrapy, time, re, os
 
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
-
 from correios.items import CorreiosItem
-
+from correios.settings import BASE_DIR
 
 class ZipCodeSpider(scrapy.Spider):
     name = 'zip_code'
@@ -39,18 +35,19 @@ class ZipCodeSpider(scrapy.Spider):
         for index in range(number_of_letters):
             index += 1
             driver.find_element_by_xpath(f'//*[@id="Geral"]/div/div/span/a[{index}]').click()
+            file_path = os.path.join(BASE_DIR, f'correios/webpages/page{index}.html')
 
-            with open(f'./correios/webpages/page{index}.html', 'w') as page_html:
+            with open(file_path, 'w') as page_html:
                 page_html.write(driver.page_source)
 
-            file_path = f'file:///home/david/Pessoal/neoway/correios/correios/webpages/page{index}.html'
-
-            yield scrapy.Request(file_path, callback=self.parse)
+            yield scrapy.Request(f'file://{file_path}', callback=self.parse)
 
             driver.back()
             time.sleep(1)
+            os.remove(file_path)
 
         driver.quit()
+
 
     def parse(self, response):
         item = CorreiosItem()

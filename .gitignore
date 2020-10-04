@@ -1,4 +1,4 @@
 *__pycache__
-correios/webpages/*
+correios/webpages/*.html
 zip_codes.json
 geckodriver.log
